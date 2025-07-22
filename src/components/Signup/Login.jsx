@@ -1,6 +1,30 @@
-import React from 'react'
+import React, {useState} from 'react'
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [userDetail, setUserDetail] = useState({mobileNumber: undefined, password: ""});
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post('http://localhost:8080/login', {
+        mobileNumber: userDetail.mobileNumber,
+        password: userDetail.password
+      });
+
+      if (res.data.credentials) {
+        window.location.href = `http://localhost:5174/?mobile=${userDetail.mobileNumber}`;
+      } else {
+        alert("Bad credentials.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Login failed');
+    }
+  };
   return (
     <form
       action="http://localhost:8080/login"
@@ -17,6 +41,8 @@ const Login = () => {
           type="number"
           placeholder="(+91) XXX-XXX-XXXX"
           name="mobileNumber"
+          value={userDetail.mobileNumber}
+          onChange={(e) => setUserDetail(prev => ({ ...prev, mobileNumber: e.target.value }))}
         />
       </div>
 
@@ -26,9 +52,11 @@ const Login = () => {
         type="password"
         placeholder="Enter password"
         name="password"
+        value={userDetail.password}
+        onChange={(e) => setUserDetail(prev => ({ ...prev, password: e.target.value }))}
       />
 
-      <button className="bg-blue-600 text-white py-[0.5rem] rounded-md font-[500]">
+      <button onClick={handleLogin} className="bg-blue-600 text-white py-[0.5rem] rounded-md font-[500]">
         Login
       </button>
     </form>
