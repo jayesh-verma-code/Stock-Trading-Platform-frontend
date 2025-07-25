@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Not found page
 const NotFound = () => {
   return (
     <div className='text-gray-600 p-[6rem] flex flex-col h-[48vh]'>
